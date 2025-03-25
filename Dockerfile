@@ -5,12 +5,10 @@ WORKDIR /source
 
 # Copy everything in this project and build app
 COPY . .
-WORKDIR /source
-CMD ["ls", "-a"]
 RUN dotnet publish -c release -o /app 
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/runtime:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app ./
 
@@ -20,4 +18,4 @@ ENV PORT 80
 EXPOSE 80
 
 # Start the app
-ENTRYPOINT ["dotnet", "donetmvc-db-demo.dll"]
+CMD ["dotnet", "donetmvc-db-demo.dll"]
