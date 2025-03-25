@@ -1,23 +1,23 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+# Start with the .NET SDK for building the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["donetmvc-db-demo.csproj", "./"]
-RUN dotnet restore "donetmvc-db-demo.csproj"
+# Work within a folder named `/source`
+WORKDIR /source
+
+# Copy everything in this project and build app
 COPY . .
-WORKDIR "/src/"
-RUN dotnet build "donetmvc-db-demo.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /source
+CMD ["ls", "-a"]
+RUN dotnet publish -c release -o /app 
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "donetmvc-db-demo.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# final stage/image
+FROM mcr.microsoft.com/dotnet/runtime:8.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app ./
+
+# Expose port 80
+# This is important in order for the Azure App Service to pick up the app
+ENV PORT 80
+EXPOSE 80
+
+# Start the app
 ENTRYPOINT ["dotnet", "donetmvc-db-demo.dll"]
