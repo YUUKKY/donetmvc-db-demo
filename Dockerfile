@@ -14,8 +14,8 @@ COPY --from=build /app ./
 
 # Expose port 80
 # This is important in order for the Azure App Service to pick up the app
-ENV PORT 80
-EXPOSE 80
+ENV PORT 8080
+EXPOSE 8080
 
 # Start the app
 CMD ["dotnet", "donetmvc-db-demo.dll"]
