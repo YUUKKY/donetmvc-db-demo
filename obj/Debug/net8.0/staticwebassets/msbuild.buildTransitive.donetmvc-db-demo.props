@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\donetmvc-db-demo.props" />
+</Project>

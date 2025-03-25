@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\donetmvc-db-demo.props" />
+</Project>

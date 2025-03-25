@@ -1,0 +1,92 @@
+﻿@model donetmvc_db_demo.Models.User
+
+@{
+    ViewData["Title"] = "Add and Query Users";
+}
+
+<h1>Add User</h1>
+
+<div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" class="form-control" />
+</div>
+<div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" class="form-control" />
+</div>
+<button id="addUserButton" class="btn btn-primary">Add User</button>
+<hr/>
+<h1>User List</h1>
+<table id="userTable" class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<script>
+    document.getElementById('addUserButton').addEventListener('click', function () {
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+
+        var data = {
+            Name: name,
+            Email: email
+        };
+
+        fetch('/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+       .then(response => {
+            if (response.ok) {
+                alert('用户添加成功');
+                // 添加用户成功后，调用查询方法
+                fetchUsers();
+            } else {
+                response.text().then(errorMessage => {
+                    alert('用户添加失败: ' + errorMessage);
+                });
+            }
+        })
+       .catch(error => {
+            alert('发生错误: ' + error.message);
+        });
+    });
+
+    function fetchUsers() {
+        fetch('/users')
+       .then(response => response.json())
+       .then(data => {
+           console.log(data)
+            var tableBody = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            data.forEach(user => {
+                var row = tableBody.insertRow();
+                var idCell = row.insertCell(0);
+                var nameCell = row.insertCell(1);
+                var emailCell = row.insertCell(2);
+
+                idCell.textContent = user.id;
+                nameCell.textContent = user.name;
+                emailCell.textContent = user.email;
+            });
+        })
+       .catch(error => {
+            alert('查询用户失败: ' + error.message);
+        });
+    }
+
+    // 页面加载时先查询一次用户列表
+    fetchUsers();
+</script>
