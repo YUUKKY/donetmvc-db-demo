@@ -2,9 +2,9 @@ name: .NET Build and Package
 
 on:
   push:
-    branches: [ master ]  # 触发条件：推送到 main 分支时
+    branches: [ main ]  # 触发条件：推送到 main 分支时
   pull_request:
-    branches: [ master ]  # 触发条件：对 main 分支的 PR
+    branches: [ main ]  # 触发条件：对 main 分支的 PR
 
 jobs:
   build:
